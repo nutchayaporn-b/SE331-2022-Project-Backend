@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import se331.rest.entity.Event;
 import se331.rest.entity.Organizer;
+import se331.rest.repository.EventRepository;
 import se331.rest.repository.OrganizerRepository;
 import se331.rest.security.entity.Authority;
 import se331.rest.security.entity.AuthorityName;
@@ -61,6 +62,8 @@ public class AuthenticationRestController {
     AuthorityRepository authorityRepository;
 
     @Autowired
+    EventRepository eventRepository;
+    @Autowired
     OrganizerRepository organizerRepository;
 
     @PostMapping("${jwt.route.authentication.path}")
@@ -90,23 +93,28 @@ public class AuthenticationRestController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) throws  AuthenticationException{
         PasswordEncoder encoder = new BCryptPasswordEncoder();
-        Authority authAdmin = Authority.builder().name(AuthorityName.ADMIN).build();
-        authorityRepository.save(authAdmin);
+        Authority authUser = Authority.builder().name(AuthorityName.USER).build();
+        authorityRepository.save(authUser);
         User user2 = User.builder()
                 .enabled(true)
                 .email(user.getEmail())
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
                 .username(user.getUsername())
+                .location(user.getLocation())
                 .password(encoder.encode(user.getPassword()))
                 .lastPasswordResetDate(Date.from(LocalDate.of(2021,01,01)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
 
-        user2.getAuthorities().add(authAdmin);
+        user2.getAuthorities().add(authUser);
         userRepository.save(user2);
 
+        Event event = Event.builder().name(user.getFirstname() + " " + user.getLastname()).location(user.getLocation()).user(user2).build();
+        eventRepository.save(event);
+
         Organizer organizer = Organizer.builder().name(user.getUsername()).build();
+        organizer.getOwnEvents().add(event);
         organizerRepository.save(organizer);
 
         organizer.setUser(user2);

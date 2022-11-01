@@ -53,6 +53,9 @@ public class User {
     @NotNull
     private Boolean enabled;
 
+    @Column(name = "LOCATION", length = 50)
+    private String location;
+
     @Column(name = "LASTPASSWORDRESETDATE")
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull

@@ -45,7 +45,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
 
-        User user1,user2,user3;
+        User user1,user2,user3,user4,user5;
 
             PasswordEncoder encoder = new BCryptPasswordEncoder();
             Authority authUser = Authority.builder().name(AuthorityName.USER).build();
@@ -57,7 +57,6 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                     .firstname("admin")
                     .lastname("admin")
                     .email("admin@admin.com")
-                    .image("https://media.discordapp.net/attachments/859092780805914644/1036578899624198174/unknown.png")
                     .enabled(true)
                     .lastPasswordResetDate(Date.from(LocalDate.of(2022,12,01).atStartOfDay(ZoneId.systemDefault()).toInstant()))
                     .build();
@@ -82,6 +81,28 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                     .lastPasswordResetDate(Date.from(LocalDate.of(2022,12,01)
                             .atStartOfDay(ZoneId.systemDefault()).toInstant()))
                     .build();
+
+        user4 = User.builder()
+                .username("johnsmith")
+                .password(encoder.encode("1234"))
+                .firstname("john")
+                .lastname("smith")
+                .email("john@smith.com")
+                .enabled(true)
+                .lastPasswordResetDate(Date.from(LocalDate.of(2022,12,01)
+                        .atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .build();
+        user5 = User.builder()
+                .username("berry")
+                .password(encoder.encode("1234"))
+                .firstname("berry")
+                .lastname("barton")
+                .email("berry@barton.com")
+                .enabled(true)
+                .lastPasswordResetDate(Date.from(LocalDate.of(2022,12,01)
+                        .atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .build();
+
             authorityRepository.save(authUser);
             authorityRepository.save(authAdmin);
             authorityRepository.save(authDoctor);
@@ -89,9 +110,13 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
             user1.getAuthorities().add(authAdmin);
             user2.getAuthorities().add(authUser);
             user3.getAuthorities().add(authDoctor);
+            user4.getAuthorities().add(authUser);
+            user5.getAuthorities().add(authUser);
             userRepository.save(user1);
             userRepository.save(user2);
             userRepository.save(user3);
+            userRepository.save(user4);
+            userRepository.save(user5);
 
         Event tempEvent = null;
         Comment  comment = null;
@@ -109,7 +134,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .name("John Smith")
                 .location("Chiang Mai")
                 .age("20")
-                .organizer(org1)
+                .organizer(org1).user(user4)
                 .build());
         comment = commentRepository.save(Comment.builder()
                 .comment("Healthy")
@@ -129,6 +154,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .age("21")
                 .location("Lampang")
                 .organizer(org1)
+                        .user(user5)
                 .build());
         comment = commentRepository.save(Comment.builder()
                 .comment("Smart")
@@ -139,40 +165,6 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
         tempEvent.getCommentList().add(comment);
         tempEvent.getVaccineList().add(vaccine2);
         org1.getOwnEvents().add(tempEvent);
-        tempEvent = eventRepository.save(Event.builder()
-                .name("William Washington")
-                .age("21")
-                .location("Bankkok")
-                .organizer(org2)
-                .build());
-        comment = commentRepository.save(Comment.builder()
-                .comment("strong")
-                .docter("Dr. Frances Mikami").build());
-        vaccine3 = vaccineRepository.save(Vaccine.builder()
-                .type("Pfizer").timestamp(Date.from(LocalDate.of(2022,12,01).atStartOfDay(ZoneId.systemDefault()).toInstant()).toString())
-                .build());
-        tempEvent.getCommentList().add(comment);
-        tempEvent.getVaccineList().add(vaccine3);
-        org2.getOwnEvents().add(tempEvent);
-        tempEvent = eventRepository.save(Event.builder()
-                .name("Josh Washington")
-                .location("Chiang Mai")
-                .age("32")
-                .organizer(org3)
-                .build());
-        comment = commentRepository.save(Comment.builder()
-                .comment("Cute")
-                .docter("Dr. Maxwell Renfroe").build());
-        vaccine1 = vaccineRepository.save(Vaccine.builder()
-                .type("Sinovac").timestamp(Date.from(LocalDate.of(2022,2,03).atStartOfDay(ZoneId.systemDefault()).toInstant()).toString())
-                .build());
-        vaccine3 = vaccineRepository.save(Vaccine.builder()
-                .type("Pfizer").timestamp(Date.from(LocalDate.of(2022,1,17).atStartOfDay(ZoneId.systemDefault()).toInstant()).toString())
-                .build());
-        tempEvent.getCommentList().add(comment);
-        tempEvent.getVaccineList().add(vaccine1);
-        tempEvent.getVaccineList().add(vaccine3);
-        org3.getOwnEvents().add(tempEvent);
         org1.setUser(user1);
         user1.setOrganizer(org1);
         org2.setUser(user2);
