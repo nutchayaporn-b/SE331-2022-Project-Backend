@@ -45,7 +45,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
 
-        User user1,user2,user3,user4,user5;
+        User user1,user2,user3,user4,user5, user6, user7;
 
             PasswordEncoder encoder = new BCryptPasswordEncoder();
             Authority authUser = Authority.builder().name(AuthorityName.USER).build();
@@ -102,26 +102,17 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .lastPasswordResetDate(Date.from(LocalDate.of(2022,12,01)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
-        user5 = User.builder()
-                .username("berry@barton.com")
+        user6 = User.builder()
+                .username("smith@william.com")
                 .password(encoder.encode("1234"))
-                .firstname("berry")
-                .lastname("barton")
-                .email("berry@barton.com")
+                .firstname("smith")
+                .lastname("william")
+                .email("smith@william.com")
                 .enabled(true)
                 .lastPasswordResetDate(Date.from(LocalDate.of(2022,12,01)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
-        user5 = User.builder()
-                .username("berry@barton.com")
-                .password(encoder.encode("1234"))
-                .firstname("berry")
-                .lastname("barton")
-                .email("berry@barton.com")
-                .enabled(true)
-                .lastPasswordResetDate(Date.from(LocalDate.of(2022,12,01)
-                        .atStartOfDay(ZoneId.systemDefault()).toInstant()))
-                .build();
+
 
 
             authorityRepository.save(authUser);
@@ -133,11 +124,14 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
             user3.getAuthorities().add(authDoctor);
             user4.getAuthorities().add(authUser);
             user5.getAuthorities().add(authUser);
+            user6.getAuthorities().add(authUser);
             userRepository.save(user1);
             userRepository.save(user2);
             userRepository.save(user3);
             userRepository.save(user4);
             userRepository.save(user5);
+            userRepository.save(user6);
+
 
         Event tempEvent = null;
         Comment  comment = null;
@@ -190,6 +184,27 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .comment("Heart")
                 .docter("Dr. Heart").build());
         tempEvent.getCommentList().add(comment);
+        tempEvent.getVaccineList().add(vaccine2);
+        org1.getOwnEvents().add(tempEvent);
+        tempEvent = eventRepository.save(Event.builder()
+                .name("Smith William")
+                .age("39")
+                .location("Lamphun")
+                .organizer(org1)
+                .image("https://img.freepik.com/free-photo/handsome-confident-smiling-man-with-hands-crossed-chest_176420-18743.jpg")
+                .user(user6)
+                .build());
+        comment = commentRepository.save(Comment.builder()
+                .comment("No problems")
+                .docter("Dr. Horace Lehnhoff").build());
+        vaccine1 = vaccineRepository.save(Vaccine.builder()
+                .type("Pfizer").timestamp(Date.from(LocalDate.of(2022,12,31).atStartOfDay(ZoneId.systemDefault()).toInstant()).toString())
+                .build());
+        vaccine2 = vaccineRepository.save(Vaccine.builder()
+                .type("Moderna").timestamp(Date.from(LocalDate.of(2022,11,12).atStartOfDay(ZoneId.systemDefault()).toInstant()).toString())
+                .build());
+        tempEvent.getCommentList().add(comment);
+        tempEvent.getVaccineList().add(vaccine1);
         tempEvent.getVaccineList().add(vaccine2);
         org1.getOwnEvents().add(tempEvent);
         org1.setUser(user1);
