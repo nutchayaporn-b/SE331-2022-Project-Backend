@@ -10,8 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import se331.rest.entity.Event;
+import se331.rest.security.entity.JwtUser;
 import se331.rest.service.EventService;
 import se331.rest.util.LabMapper;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class EventController {
@@ -23,7 +26,8 @@ public class EventController {
     @GetMapping("event")
     public ResponseEntity<?> getEventLists(@RequestParam(value = "_limit", required = false) Integer perPage
             , @RequestParam(value = "_page", required = false) Integer page
-            , @RequestParam(value = "title", required = false) String title) {
+            , @RequestParam(value = "title", required = false) String title
+            , @RequestParam(value="userId", required = false) Long userId) {
         perPage = perPage == null ? 3 : perPage;
         page = page == null ? 1 : page;
         Page<Event> pageOutput;
@@ -31,6 +35,9 @@ public class EventController {
             pageOutput = eventService.getEvents(perPage, page);
         } else {
             pageOutput = eventService.getEvents(title, PageRequest.of(page - 1, perPage));
+        }
+        if(userId != null) {
+            pageOutput = eventService.getEventsByUserId(userId, PageRequest.of(page - 1, perPage));
         }
         HttpHeaders responseHeader = new HttpHeaders();
 

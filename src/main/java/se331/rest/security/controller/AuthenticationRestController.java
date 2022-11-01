@@ -1,6 +1,8 @@
 package se331.rest.security.controller;
 
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +34,7 @@ import se331.rest.util.LabMapper;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -113,30 +113,8 @@ public class AuthenticationRestController {
         Event event = Event.builder().name(user.getFirstname() + " " + user.getLastname()).location(user.getLocation()).user(user2).build();
         eventRepository.save(event);
 
-        Organizer organizer = Organizer.builder().name(user.getUsername()).build();
-        organizer.getOwnEvents().add(event);
-        organizerRepository.save(organizer);
-
-        organizer.setUser(user2);
-        user2.setOrganizer(organizer);
-
         userService.save(user2);
         return ResponseEntity.ok(LabMapper.INSTANCE.getUserDTO(user2));
-    }
-
-
-    @GetMapping(value = "${jwt.route.authentication.refresh}")
-    public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) {
-        String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-        JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
-
-        if (jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())) {
-            String refreshedToken = jwtTokenUtil.refreshToken(token);
-            return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken));
-        } else {
-            return ResponseEntity.badRequest().body(null);
-        }
     }
 
 

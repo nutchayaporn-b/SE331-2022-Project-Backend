@@ -14,4 +14,7 @@ public interface EventService {
     Event save(Event event);
     Page<Event> getEvents(String title, Pageable pageable);
 
+    Page<Event> getEventsByUserId(Long userId, Pageable pageable);
+
+
 }

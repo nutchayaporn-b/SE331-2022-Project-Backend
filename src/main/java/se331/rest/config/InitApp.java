@@ -52,7 +52,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
             Authority authAdmin = Authority.builder().name(AuthorityName.ADMIN).build();
             Authority authDoctor = Authority.builder().name(AuthorityName.DOCTER).build();
             user1 = User.builder()
-                    .username("admin")
+                    .username("admin@admin.com")
                     .password(encoder.encode("admin"))
                     .firstname("admin")
                     .lastname("admin")
@@ -62,7 +62,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                     .build();
 
             user2 = User.builder()
-                    .username("user")
+                    .username("user@user.com")
                     .password(encoder.encode("user"))
                     .firstname("user")
                     .lastname("user")
@@ -72,7 +72,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                             .atStartOfDay(ZoneId.systemDefault()).toInstant()))
                     .build();
             user3 = User.builder()
-                    .username("doctor")
+                    .username("doctor@docter.com")
                     .password(encoder.encode("doctor"))
                     .firstname("doctor")
                     .lastname("doctor")
@@ -83,7 +83,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                     .build();
 
         user4 = User.builder()
-                .username("johnsmith")
+                .username("john@smith.com")
                 .password(encoder.encode("1234"))
                 .firstname("john")
                 .lastname("smith")
@@ -93,7 +93,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
         user5 = User.builder()
-                .username("berry")
+                .username("berry@barton.com")
                 .password(encoder.encode("1234"))
                 .firstname("berry")
                 .lastname("barton")
