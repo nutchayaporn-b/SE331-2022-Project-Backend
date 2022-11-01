@@ -102,6 +102,27 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .lastPasswordResetDate(Date.from(LocalDate.of(2022,12,01)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
+        user5 = User.builder()
+                .username("berry@barton.com")
+                .password(encoder.encode("1234"))
+                .firstname("berry")
+                .lastname("barton")
+                .email("berry@barton.com")
+                .enabled(true)
+                .lastPasswordResetDate(Date.from(LocalDate.of(2022,12,01)
+                        .atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .build();
+        user5 = User.builder()
+                .username("berry@barton.com")
+                .password(encoder.encode("1234"))
+                .firstname("berry")
+                .lastname("barton")
+                .email("berry@barton.com")
+                .enabled(true)
+                .lastPasswordResetDate(Date.from(LocalDate.of(2022,12,01)
+                        .atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .build();
+
 
             authorityRepository.save(authUser);
             authorityRepository.save(authAdmin);
@@ -134,6 +155,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .name("John Smith")
                 .location("Chiang Mai")
                 .age("20")
+                        .image("https://res.cloudinary.com/uva-batten-school/image/upload/v1600125475/Batten%20Website%20Master/2020-09/John_Holbein_H.jpg")
                 .organizer(org1).user(user4)
                 .build());
         comment = commentRepository.save(Comment.builder()
@@ -154,6 +176,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
                 .age("21")
                 .location("Lampang")
                 .organizer(org1)
+                        .image("https://www.askinclinic.co.uk/wp-content/uploads/2020/02/Beautiful-Woman-11-1024x701.jpg")
                         .user(user5)
                 .build());
         comment = commentRepository.save(Comment.builder()
@@ -162,6 +185,10 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
         vaccine2 = vaccineRepository.save(Vaccine.builder()
                 .type("Moderna").timestamp(Date.from(LocalDate.of(2022,3,12).atStartOfDay(ZoneId.systemDefault()).toInstant()).toString())
                 .build());
+        tempEvent.getCommentList().add(comment);
+        comment = commentRepository.save(Comment.builder()
+                .comment("Heart")
+                .docter("Dr. Heart").build());
         tempEvent.getCommentList().add(comment);
         tempEvent.getVaccineList().add(vaccine2);
         org1.getOwnEvents().add(tempEvent);
